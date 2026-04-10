@@ -1,0 +1,11 @@
+Thank you for installing {{ .Chart.Name }}.
+
+To see the application status:
+
+  kubectl get deployments,svc -l app.kubernetes.io/instance={{ .Release.Name }}
+
+If ingress is enabled, check hosts:
+
+  {{- range .Values.ingress.hosts }}
+  - {{ .host }}
+  {{- end }}

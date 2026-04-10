@@ -1,0 +1,84 @@
+replicaCount: 2
+
+image:
+  repository: nginx
+  tag: "stable"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  hosts:
+    - host: chart-example.local
+      paths: ["/"]
+  tls: []
+  # Default annotations include a basic AWS ALB setup. Customize or replace as needed.
+  annotations:
+    # Historically the ALB ingress controller uses this annotation; keep it for compatibility
+    kubernetes.io/ingress.class: "alb"
+    # Public ALB vs internal
+    alb.ingress.kubernetes.io/scheme: "internet-facing"
+    # Target type: ip (for ENI + IP mode) or instance
+    alb.ingress.kubernetes.io/target-type: "ip"
+    # Basic healthcheck config (adjust to your app health endpoint)
+    alb.ingress.kubernetes.io/healthcheck-path: "/"
+    alb.ingress.kubernetes.io/healthcheck-port: "traffic-port"
+    # Example listen ports (JSON array as string). Change if you also want HTTPS on 443.
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    # If you want TLS via ACM, set this to your certificate ARN (empty by default)
+    alb.ingress.kubernetes.io/certificate-arn: ""
+  # Default ingressClassName used by the Ingress resource. Keep as "alb" for AWS ALB ingress controllers.
+  ingressClassName: "alb"
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+
+resources: {}
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+networkPolicy:
+  enabled: false
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 5
+
+config:
+  exampleKey: exampleValue
+
+secret:
+  enabled: false
+  stringData: {}
+
+podAnnotations: {}
+podLabels: {}
+
+imagePullSecrets: []
