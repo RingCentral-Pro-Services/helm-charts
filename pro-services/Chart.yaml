@@ -7,3 +7,8 @@ appVersion: "1.0.0"
 keywords:
   - ringcentral
   - pro-services
+maintainers:
+  - name: RingCentral Pro Services
+    email: ops@ringcentral.com
+sources:
+  - https://github.com/RingCentral-Pro-Services
