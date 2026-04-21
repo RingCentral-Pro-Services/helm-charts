@@ -71,8 +71,13 @@ readinessProbe:
   initialDelaySeconds: 5
   periodSeconds: 5
 
-config:
-  exampleKey: exampleValue
+# Flat key/value pairs injected as env vars into the container via envFrom + ConfigMap.
+# Developers define their app config here; changing any value triggers a rolling restart.
+# Example:
+#   NODE_ENV: staging
+#   API_URL: https://ci-demo-api.ps.ringcentral.com
+#   LOG_LEVEL: info
+config: {}
 
 secret:
   enabled: false

@@ -19,6 +19,8 @@ spec:
 {{ toYaml .Values.podLabels | indent 8 }}
         {{- end }}
       annotations:
+        # Checksum of the ConfigMap — changing any config value triggers a rolling restart
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
         {{- end }}
@@ -35,9 +37,13 @@ spec:
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
-          env:
-            - name: EXAMPLE
-              value: "{{ .Values.config.exampleKey }}"
+          envFrom:
+            - configMapRef:
+                name: {{ include "pro-services.fullname" . }}-cfg
+          {{- if .Values.secret.enabled }}
+            - secretRef:
+                name: {{ include "pro-services.fullname" . }}-secret
+          {{- end }}
           livenessProbe:
             httpGet:
               path: {{ .Values.livenessProbe.httpGet.path }}
