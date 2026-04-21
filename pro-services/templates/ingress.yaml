@@ -15,8 +15,8 @@ spec:
       http:
         paths:
           {{- range .paths }}
-          - path: {{ . | quote }}
-            pathType: ImplementationSpecific
+          - path: {{ .path | default . | quote }}
+            pathType: {{ .pathType | default "ImplementationSpecific" }}
             backend:
               service:
                 name: {{ include "pro-services.fullname" $ }}
