@@ -40,10 +40,10 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "pro-services.fullname" . }}-cfg
-          {{- if .Values.secret.enabled }}
+            {{- if .Values.secret.enabled }}
             - secretRef:
                 name: {{ include "pro-services.fullname" . }}-secret
-          {{- end }}
+            {{- end }}
           livenessProbe:
             httpGet:
               path: {{ .Values.livenessProbe.httpGet.path }}

@@ -83,6 +83,37 @@ secret:
   enabled: false
   stringData: {}
 
+# External Secrets configuration for fetching secrets from AWS Secrets Manager
+externalSecret:
+  enabled: false
+  # Refresh interval for syncing secrets from AWS Secrets Manager
+  refreshInterval: "1m"
+  # Reference to the ClusterSecretStore
+  secretStoreRef:
+    name: aws-secretsmanager
+    kind: ClusterSecretStore
+  # Target K8s Secret that will be created/updated
+  target:
+    name: "" # Leave empty to use default: {app-name}-secret
+    creationPolicy: Owner
+    # Optional: Template for transforming secret data
+    template:
+      annotations: {}
+      type: Opaque
+      data: {}
+  # Individual secret key mappings from AWS Secrets Manager
+  # Example:
+  #   - secretKey: username
+  #     remoteRef:
+  #       key: /psi/staging/test-app
+  #       property: username
+  data: []
+  # Extract entire secret JSON from AWS Secrets Manager
+  # Example:
+  #   - extract:
+  #       key: /psi/staging/test-app
+  dataFrom: []
+
 podAnnotations: {}
 podLabels: {}
 
